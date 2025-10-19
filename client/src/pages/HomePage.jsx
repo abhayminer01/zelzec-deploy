@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import MobileBottomNav from '../components/MobileBottomNav';
 import { getProductsForHome } from '../services/product-api'
+import Footer from '../components/Footer'
 
 
 export default function HomePage() {
@@ -81,60 +82,102 @@ export default function HomePage() {
             })}
           </div>
         </div>
-        <div className="px-4 md:px-10 mt-10 md:mt-14 mb-20">
-          <div className="bg-border/40 w-full rounded-lg px-4 md:px-10 py-6 md:py-10">
-            <h1 className="text-[18px] md:text-[20px] font-semibold mb-6">
-              Featured Listings
-            </h1>
+    <div className="px-4 md:px-10 mt-10 md:mt-14 mb-20">
+      <div className="bg-border/40 w-full rounded-lg px-4 md:px-10 py-6 md:py-10">
+        <h1 className="text-[18px] md:text-[20px] font-semibold mb-6">
+          Featured Listings
+        </h1>
 
-            {products.length === 0 ? (
-              <p className="text-center text-gray-500">No products found</p>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-                {products.map((p) => {
-                  const Icon = Icons[p.category?.icon] || Icons.Package;
+        {products.length === 0 ? (
+          <p className="text-center text-gray-500">No products found</p>
+        ) : (
+          <>
+            <div className="md:hidden flex gap-5 overflow-x-auto pb-4 -mx-4 px-4">
+              {products.map((p) => {
+                const Icon = Icons[p.category?.icon] || Package;
 
-                  return (
-                    <div
-                      key={p._id}
-                      className="bg-white border rounded-lg shadow-sm hover:shadow-md transition p-3 flex flex-col cursor-pointer"
-                    >
-                      {/* Product Image */}
-                      <div className="w-full h-36 md:h-40 overflow-hidden rounded-md">
-                        <img
-                          src={`http://localhost:5000${p.images?.[0]?.url}`}
-                          alt={p.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      {/* Product Info */}
-                      <div className="mt-3 flex flex-col flex-grow justify-between">
-                        <h2 className="text-sm md:text-base font-semibold line-clamp-1">
-                          {p.title}
-                        </h2>
-                        <p>{p.description}</p>
-
-                        <div className="flex items-center gap-1 text-gray-500 text-xs md:text-sm">
-                          {Icon && <Icon className="size-4 text-primary" />}
-                          <span>{p.category?.title}</span>
-                        </div>
-
-                        <p className="text-primary font-bold mt-1">
-                          ₹{p.price.toLocaleString()}
-                        </p>
-                      </div>
+                return (
+                  <div
+                    key={p._id}
+                    className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition  flex flex-col cursor-pointer min-w-[280px] flex-shrink-0"
+                  >
+                    <div className="w-full h-36 overflow-hidden rounded-md">
+                      <img
+                        src={`http://localhost:5000${p.images?.[0]?.url}`}
+                        alt={p.title}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+
+                    <div className="mt-3 p-3 flex flex-col flex-grow justify-between">
+                      <h2 className="text-sm font-semibold line-clamp-1">
+                        {p.title}
+                      </h2>
+                      <p className="text-xs text-gray-600 line-clamp-2 mt-1">{p.description}</p>
+
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mt-2">
+                        {Icon && <Icon className="w-4 h-4 text-primary" />}
+                        <span>{p.category?.title}</span>
+                      </div>
+
+                      <p className="text-primary font-bold mt-1">
+                        ₹{p.price.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
+              {products.map((p) => {
+                const Icon = Icons[p.category?.icon] || Package;
+
+                return (
+                  <div
+                    key={p._id}
+                    className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition flex flex-col cursor-pointer"
+                  >
+                    <div className="w-full h-36 md:h-65 overflow-hidden rounded-md">
+                      <img
+                        src={`http://localhost:5000${p.images?.[0]?.url}`}
+                        alt={p.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="mt-3 p-3 flex flex-col flex-grow justify-between">
+                      <h2 className="text-2xl md:text-base font-extrabold line-clamp-1">
+                        {p.title}
+                      </h2>
+                      <p className="text-xs text-gray-600 line-clamp-2 mt-1">{p.description}</p>
+
+                      <div className="flex items-center gap-1 text-gray-500 text-xs md:text-sm">
+                        {Icon && <Icon className="size-4 text-primary" />}
+                        <span>{p.category?.title}</span>
+                      </div>
+
+                      <p className="text-black font-bold mt-1">
+                        ₹{p.price.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  
+
+        <div className='flex flex-col bg-primary w-screen h-70 gap-4 justify-center items-center'>
+            <h1 className='text-white text-3xl'>Ready to Sell?</h1>
+            <p className='text-gray-400'>Post your ad and reach thousand of buyers</p>
+            <button className='border bg-white rounded-lg px-6 py-3 shadow-xl'>Post Your Ad Now</button>
         </div>
 
-        <div className='bg-primary w-screen h-70'>
-
-        </div>
+        <Footer/>
 
     </div>
   )
