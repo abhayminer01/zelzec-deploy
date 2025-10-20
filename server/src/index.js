@@ -8,7 +8,7 @@ const path = require("path");
 const app = express();
 app.use(express.json());
 app.use(cors({
-    origin : ['http://localhost:5173', 'http://localhost:5174'],
+    origin : ['http://localhost:5173', 'http://localhost:5174', 'https://zelzec.com', 'https://admin.zelzec.com'],
     credentials : true,
     methods : ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 }));
@@ -17,7 +17,7 @@ app.use(session({
     resave : false,
     saveUninitialized : false,
     cookie : {
-        secure : false,
+        secure : true,
         httpOnly : true
     }
 }));
