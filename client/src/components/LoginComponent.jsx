@@ -17,19 +17,21 @@ export default function LoginComponent() {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    const req = await userLogin({ email, password });
-    if(req?.success) {
-      toast.success('User Login', {
-        description : "Successfully Logged in"
+
+    const res = await userLogin({ email, password });
+
+    if (res?.success) {
+      toast.success("User Login", {
+        description: "Successfully Logged in",
       });
       login();
       closeLogin();
     } else {
-      toast.error('Something Occured while Login', {
-        description : `${req?.message || req?.err || ":("}`
+      toast.error("Login Failed", {
+        description: res?.message || "Invalid credentials or server error",
       });
     }
-  }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={handleBackdropClick}>

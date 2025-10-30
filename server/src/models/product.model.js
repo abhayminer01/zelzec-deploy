@@ -23,7 +23,8 @@ const productSchema = new mongoose.Schema({
     price: Number,
     location: {
         lat : Number,
-        lng : Number
+        lng : Number,
+        place : String
     }
 }, { timestamps : true });
 

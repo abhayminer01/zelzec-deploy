@@ -32,10 +32,10 @@ export const SellProvider = ({ children }) => {
     setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLocation = ({ lat, lng }) => {
+  const handleLocation = ({ lat, lng, place }) => {
     setData((prev) => ({
       ...prev,
-      location : { lat : lat, lng : lng }
+      location : { lat : lat, lng : lng, place: place }
     }));
   };
 

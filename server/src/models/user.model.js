@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema({
         lat : String,
         lng : String
     },
+    full_name : String,
+    mobile : Number,
+    address : String,
     products : {
         type : Number,
         default : 0

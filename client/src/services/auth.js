@@ -17,16 +17,17 @@ export const checkAuth = async () => {
 }
 
 export const userLogin = async (payload) => {
-    try {
-        const req = await api.post('/api/v1/auth/login', payload, {
-            withCredentials : true
-        });
-        return req.data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
+  try {
+    const req = await api.post('/api/v1/auth/login', payload, {
+      withCredentials: true,
+    });
+    return req.data;
+  } catch (error) {
+    console.log(error);
+    // ✅ Return a consistent structure even on error
+    return error?.response?.data || { success: false, message: "Network error" };
+  }
+};
 
 export const registerUser = async (payload) => {
     try {
@@ -36,5 +37,6 @@ export const registerUser = async (payload) => {
         return req.data;
     } catch (error) {
         console.log(error);
+        return error?.response?.data || { success: false, message: "Network error" };
     }
 }

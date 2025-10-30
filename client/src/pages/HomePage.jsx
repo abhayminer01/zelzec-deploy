@@ -18,13 +18,15 @@ import { useEffect } from 'react';
 import MobileBottomNav from '../components/MobileBottomNav';
 import { getProductsForHome } from '../services/product-api'
 import Footer from '../components/Footer'
+import { useAuth } from '../contexts/AuthContext'
 
 
 export default function HomePage() {
   const [category, setCategory] = useState([]);
   const [products, setProducts] = useState([]);
   const { isLoginOpen, isRegisterOpen, openLogin, closeLogin } = useModal();
-  const { step } = useSell();
+  const { step, nextStep, clearStep } = useSell();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     fetchPrimaryCategories();
@@ -52,6 +54,19 @@ export default function HomePage() {
       console.log(error);
     }
   }
+
+  const handlePostAdButton = () => {
+    if(!isAuthenticated) {
+      openLogin();
+    } else {
+      if(step === 0) {
+        nextStep();
+      } else {
+        clearStep();
+      }
+    }
+  }
+
   return (
     <div className='pb-20 md:pb-0'>
         <Toaster position='top-right'/>
@@ -74,7 +89,7 @@ export default function HomePage() {
             {category.map((item, index) => {
               const Icon = Icons[item.icon];
               return(
-                <div key={index} className='border px-4 py-4 md:px-8 md:py-4 w-full flex flex-col justify-center align-middle items-center border-border rounded-lg hover:text-primary transition hover:border-primary' >
+                <div key={index} className='border px-4 py-4 md:px-8 md:py-4 w-full md:w-[250px] flex flex-col justify-center align-middle items-center border-border rounded-lg hover:text-primary transition hover:border-primary' >
                   {Icon && <Icon className="size-7 md:size-7 text-primary mb-1" />}
                   <span className="text-xs md:text-sm font-medium text-center">{item.title}</span>
                 </div>
@@ -103,7 +118,7 @@ export default function HomePage() {
                   >
                     <div className="w-full h-36 overflow-hidden rounded-md">
                       <img
-                        src={`http://localhost:5000${p.images?.[0]?.url}`}
+                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${p.images?.[0]?.filename}`}
                         alt={p.title}
                         className="w-full h-full object-cover"
                       />
@@ -152,12 +167,18 @@ export default function HomePage() {
                       </h2>
                       <p className="text-xs text-gray-600 line-clamp-2 mt-1">{p.description}</p>
 
-                      <div className="flex items-center gap-1 text-gray-500 text-xs md:text-sm">
-                        {Icon && <Icon className="size-4 text-primary" />}
-                        <span>{p.category?.title}</span>
+                      <div className="flex items-center gap-1 justify-between mt-1 text-gray-500 text-xs md:text-sm">
+                        <div className='flex items-center gap-1'>
+                          {Icon && <Icon className="size-4 text-primary" />}
+                          <span>{p.category?.title}</span>
+                        </div>
+                        <div className='flex items-center gap-1'>
+                          <Icons.MapPin className="size-4 text-primary" />
+                          <span>location : {p.location.place || "nill"}</span>
+                        </div>
                       </div>
 
-                      <p className="text-black font-bold mt-1">
+                      <p className="text-primary font-bold text-[20px] mt-1">
                         ₹{p.price.toLocaleString()}
                       </p>
                     </div>
@@ -174,7 +195,7 @@ export default function HomePage() {
         <div className='flex flex-col bg-primary w-screen h-70 gap-4 justify-center items-center'>
             <h1 className='text-white text-3xl'>Ready to Sell?</h1>
             <p className='text-gray-400'>Post your ad and reach thousand of buyers</p>
-            <button className='border bg-white rounded-lg px-6 py-3 shadow-xl'>Post Your Ad Now</button>
+            <button onClick={handlePostAdButton} className='border bg-white rounded-lg px-6 py-3 shadow-xl'>Post Your Ad Now</button>
         </div>
 
         <Footer/>

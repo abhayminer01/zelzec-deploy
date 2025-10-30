@@ -32,7 +32,11 @@
   border-radius: 10px;
   color: #8069AE;
   transition: all 0.2s ease;
+  width: 100px; /* fixed width */
+  max-width: 100%; /* optional: prevents overflow on very small screens */
+  box-sizing: border-box; /* ensures padding included in width */
 }
+
 .secondarybutton:hover {
   background: #8069AE;
   color: white;

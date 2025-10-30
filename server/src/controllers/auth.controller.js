@@ -15,7 +15,7 @@ const checkAuth = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, mobile, full_name, address, location } = req.body;
         if(!email || !password) {
             return res.status(400).json({ success : false, message : "All Fields are required!" });
         }
@@ -29,7 +29,11 @@ const registerUser = async (req, res) => {
 
         user = await User.create({
             email : email,
-            password : hashedPassword
+            password : hashedPassword,
+            mobile : mobile,
+            full_name : full_name,
+            address : address,
+            location : location
         });
 
         req.session.user = { id : user._id };
