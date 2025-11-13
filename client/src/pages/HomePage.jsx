@@ -81,7 +81,7 @@ export default function HomePage() {
         { step === 5 && <SetPrice /> }
         { step === 6 && <FinalStep /> }
         <div>
-          <img src="images/image.png" className='w-screen h-100' />
+          <img src="images/image.png" className='w-screen md:h-100 h-30' />
         </div>
         <div className='px-4 md:px-50 mt-6 md:mt-10'>
           <h1 className='text-[18px] md:text-[20px] font-semibold'>Browse Categories</h1>

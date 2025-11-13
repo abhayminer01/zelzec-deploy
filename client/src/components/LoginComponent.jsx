@@ -4,6 +4,7 @@ import { useModal } from "../contexts/ModalContext";
 import { userLogin } from "../services/auth";
 import { toast } from "sonner";
 import { useAuth } from "../contexts/AuthContext";
+import { X } from "lucide-react";
 
 export default function LoginComponent() {
   const { isLoginOpen, openLogin, closeLogin, openRegister } = useModal();
@@ -35,8 +36,9 @@ export default function LoginComponent() {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={handleBackdropClick}>
-      <div className="bg-white rounded-2xl shadow-xl w-[350px] p-8 flex flex-col items-center relative" onClick={e => e.stopPropagation()}>
+      <div className="bg-white md:rounded-2xl shadow-xl md:w-[350px] h-full md:h-auto p-8 flex flex-col items-center relative" onClick={e => e.stopPropagation()}>
         {/* Heading */}
+        <span className="text-2xl absolute right-0 pr-5 top-0 pt-5 text-primary md:hidden" onClick={handleBackdropClick}><X /></span>
         <h1 className="text-2xl font-bold mb-1">Sign in</h1>
         <p className="text-gray-700 text-sm">Welcome to <span className="font-semibold">ZelZec</span></p>
         <p className="text-gray-500 text-sm mb-6">Sign in to Buy and Sell your Stuff!</p>
