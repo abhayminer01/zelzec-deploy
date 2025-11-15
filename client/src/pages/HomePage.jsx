@@ -19,6 +19,7 @@ import MobileBottomNav from '../components/MobileBottomNav';
 import { getProductsForHome } from '../services/product-api'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
+import { visitorCount } from '../services/auth'
 
 
 export default function HomePage() {
@@ -31,7 +32,16 @@ export default function HomePage() {
   useEffect(() => {
     fetchPrimaryCategories();
     fetchProducts();
+    incrementVisitor();
   }, []);
+
+  const incrementVisitor = async() => {
+    try {
+      const res = await visitorCount();
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const fetchProducts = async () => {
     try {

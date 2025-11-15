@@ -16,6 +16,17 @@ export const checkAuth = async () => {
     }
 }
 
+export const visitorCount = async () => {
+    try {
+        const req = await api.get('/api/v1/visitor/increment', {
+            withCredentials : true
+        });
+        return req.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const userLogin = async (payload) => {
   try {
     const req = await api.post('/api/v1/auth/login', payload, {
