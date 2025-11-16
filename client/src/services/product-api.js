@@ -26,10 +26,18 @@ export const createProduct = async (data) => {
   return res.data;
 };
 
-
 export const getProductsForHome = async () => {
   try {
     const req = await api.get('/');
+    return req.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const getProduct = async (id) => {
+  try {
+    const req = await api.get(`/${id}`);
     return req.data;
   } catch (error) {
     console.log(error);

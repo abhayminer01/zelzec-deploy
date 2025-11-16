@@ -29,10 +29,10 @@ export default function NavBar() {
   return (
     <div className='w-screen h-16 md:h-20 flex justify-center align-middle gap-10 items-center px-4 md:px-10 border-b border-border'>
       <div className='md:hidden w-full flex justify-center'>
-        <img src="images/logo.png" alt="Logo" className="h-8" />
+        <img src="/images/logo.png" alt="Logo" className="h-8" />
       </div>
 
-      <img src="images/logo.png" alt="Logo" className="h-10 hidden md:block" />
+      <img src="/images/logo.png" alt="Logo" className="h-10 hidden md:block" />
 
       <div className='relative w-[750px] hidden md:block'>
           <input 

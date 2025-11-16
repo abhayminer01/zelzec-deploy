@@ -60,7 +60,22 @@ const getLatestProducts = async (req, res) => {
   }
 }
 
+const getProduct = async(req, res) => {
+  const { id } = req.params;
+  try {
+    const product = await Product.findById(id);
+    res.status(200).json({ success : true, data : product })
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error fetching product',
+    });
+  }
+}
+
 module.exports = {
   createProduct,
-  getLatestProducts
+  getLatestProducts,
+  getProduct
 }

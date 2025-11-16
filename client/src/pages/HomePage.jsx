@@ -20,7 +20,7 @@ import { getProductsForHome } from '../services/product-api'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { visitorCount } from '../services/auth'
-
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [category, setCategory] = useState([]);
@@ -28,6 +28,8 @@ export default function HomePage() {
   const { isLoginOpen, isRegisterOpen, openLogin, closeLogin } = useModal();
   const { step, nextStep, clearStep } = useSell();
   const { isAuthenticated } = useAuth();
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchPrimaryCategories();
@@ -75,6 +77,10 @@ export default function HomePage() {
         clearStep();
       }
     }
+  }
+
+  const handleCardClick = (id) => {
+    navigate(`/product/${id}`);
   }
 
   return (
@@ -160,6 +166,7 @@ export default function HomePage() {
 
                 return (
                   <div
+                    onClick={() => handleCardClick(p._id)}
                     key={p._id}
                     className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition flex flex-col cursor-pointer"
                   >

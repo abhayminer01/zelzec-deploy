@@ -6,5 +6,6 @@ const { userAuthMiddleware } = require("../middlewares/auth.middleware");
 
 router.post("/create", upload.array("images", 10), userAuthMiddleware, productController.createProduct);
 router.get('/', productController.getLatestProducts);
+router.get('/:id', productController.getProduct);
 
 module.exports = router;
