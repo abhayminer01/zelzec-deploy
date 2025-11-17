@@ -6,7 +6,6 @@ import { useAuth } from '../contexts/AuthContext';
 import LoginComponent from '../components/LoginComponent';
 import { toast, Toaster } from 'sonner';
 import NavBar from '../components/NavBar';
-import { Socket } from "socket.io-client";
 
 export default function ProductPage() {
     const id = useParams().id;
