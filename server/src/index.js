@@ -32,6 +32,7 @@ app.use('/api/v1/admin', require('./routes/admin.route'));
 app.use('/api/v1/category', require('./routes/category.routes'));
 app.use('/api/v1/product', require('./routes/product.routes'));
 app.use('/api/v1/visitor', require('./routes/visitor.route'));
+app.use('/api/v1/chat', require('./routes/chat.route'));
 
 app.get("/uploads/:filename", (req, res) => {
   const filename = req.params.filename;
