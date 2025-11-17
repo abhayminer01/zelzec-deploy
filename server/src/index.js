@@ -7,7 +7,7 @@ const path = require("path");
 const fs = require("fs");
 const cookieParser = require('cookie-parser')
 
-const { app, server, io } = require('./configs/socket');
+const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -47,7 +47,7 @@ app.get("/uploads/:filename", (req, res) => {
 });
 
 const PORT = process.env.PORT;
-server.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Server Running On Port : ${PORT}`);
   connectDatabase();
 });
