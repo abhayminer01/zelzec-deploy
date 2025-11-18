@@ -4,9 +4,10 @@ import { checkAuth } from '../services/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useModal } from '../contexts/ModalContext';
 import { useSell } from '../contexts/SellContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function NavBar() {
-
+  const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
     const { isLoginOpen, openLogin, closeLogin, openRegister } = useModal();
     const { step, nextStep } = useSell();
@@ -46,7 +47,7 @@ export default function NavBar() {
       <div className='items-center gap-5 hidden md:flex'>
           {isAuthenticated ? (
             <>
-              <UserCircleIcon className='text-primary size-9 cursor-pointer' />
+              <UserCircleIcon onClick={() => navigate('/profile')} className='text-primary size-9 cursor-pointer' />
               <button className='primarybutton' onClick={() => nextStep()}>Sell</button>
             </>
           ) : (

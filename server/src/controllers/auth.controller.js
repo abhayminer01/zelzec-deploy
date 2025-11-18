@@ -7,9 +7,22 @@ const checkAuth = async (req, res) => {
             return res.status(400).json({ success : false, message : "Not Authenticated" });
         }
 
-        res.status(200).json({ success : true, message : "User is Authenticated" });
+        res.status(200).json({ success : true, message : "User is Authenticated", user : req.session.user._id });
     } catch (error) {
         res.status(500).json({ success : false, err : error });
+    }
+}
+
+const getUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if(!user) {
+            return res.status(400).json({ success : false, message : "User not found" });
+        }
+
+        res.status(200).json({ success : true, data : user });
+    } catch (error) {
+        res.status(500).json({ success : false, err : error })
     }
 }
 
@@ -37,7 +50,7 @@ const registerUser = async (req, res) => {
         });
 
         req.session.user = { id : user._id };
-        res.status(200).json({ success : true });
+        res.status(200).json({ success : true, user : user._id });
 
     } catch (error) {
         res.status(500).json({ success : false, err : error });
@@ -71,5 +84,6 @@ const loginUser = async (req, res) => {
 module.exports = {
     checkAuth,
     registerUser,
-    loginUser
+    loginUser,
+    getUser
 }

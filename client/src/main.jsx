@@ -7,6 +7,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ModalProvider } from './contexts/ModalContext';
 import { SellProvider } from './contexts/SellContext';
 import ProductPage from './pages/ProductPage';
+import ProfilePage from './pages/ProfilePage';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path='/' element={ <HomePage /> }/>
           <Route path='product/:id' element={ <ProductPage /> }/>
+          <Route path='profile' element = { <ProfilePage /> } />
         </Routes>
       </Router>
     </SellProvider>

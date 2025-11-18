@@ -51,3 +51,14 @@ export const registerUser = async (payload) => {
         return error?.response?.data || { success: false, message: "Network error" };
     }
 }
+
+export const getUser = async () => {
+    try {
+        const req = await api.get('/api/v1/auth/', {
+            withCredentials : true
+        });
+        return req.data.data;
+    } catch (error) {
+        console.log(error);
+    }
+}

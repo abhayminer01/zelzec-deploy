@@ -43,3 +43,12 @@ export const getProduct = async (id) => {
     console.log(error);
   }
 }
+
+export const getProductForProfile = async () => {
+  try {
+    const req = await api.get('/profile');
+    return req.data;
+  } catch (error) {
+    console.log(error);
+  }
+}

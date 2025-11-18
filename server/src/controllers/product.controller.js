@@ -38,6 +38,7 @@ const createProduct = async (req, res) => {
   }
 };
 
+// GET PRODUCTS FOR HOME PAGE
 const getLatestProducts = async (req, res) => {
   try {
     // Fetch latest 8 products, sorted by creation date (newest first)
@@ -60,6 +61,7 @@ const getLatestProducts = async (req, res) => {
   }
 }
 
+// GET PRODUCT FOR PRODUCT PAGE
 const getProduct = async(req, res) => {
   const { id } = req.params;
   try {
@@ -74,8 +76,22 @@ const getProduct = async(req, res) => {
   }
 }
 
+// GET LISTED PRODUCTS BY USERS
+const getListedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ user : req.user._id }).sort({ createdAt : -1 });
+    res.status(200).json({ success : true, data : products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error
+    });
+  }
+}
+
 module.exports = {
   createProduct,
   getLatestProducts,
-  getProduct
+  getProduct,
+  getListedProducts
 }
