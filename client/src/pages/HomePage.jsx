@@ -83,6 +83,10 @@ export default function HomePage() {
     navigate(`/product/${id}`);
   }
 
+  const handleCategoryClick = (id) => {
+    navigate(`/category/${id}`)
+  }
+
   return (
     <div className='pb-20 md:pb-0'>
         <Toaster position='top-right'/>
@@ -105,7 +109,7 @@ export default function HomePage() {
             {category.map((item, index) => {
               const Icon = Icons[item.icon];
               return(
-                <div key={index} className='border px-4 py-4 md:px-8 md:py-4 w-full md:w-[250px] flex flex-col justify-center align-middle items-center border-border rounded-lg hover:text-primary transition hover:border-primary' >
+                <div onClick={() => handleCategoryClick(item._id)} key={index} className='border px-4 py-4 md:px-8 md:py-4 w-full md:w-[250px] flex flex-col justify-center align-middle items-center border-border rounded-lg hover:text-primary transition hover:border-primary' >
                   {Icon && <Icon className="size-7 md:size-7 text-primary mb-1" />}
                   <span className="text-xs md:text-sm font-medium text-center">{item.title}</span>
                 </div>

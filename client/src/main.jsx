@@ -9,6 +9,7 @@ import { SellProvider } from './contexts/SellContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
 import InboxPage from './pages/InboxPage';
+import Catalouge from './pages/Catalouge';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='product/:id' element={ <ProductPage /> }/>
           <Route path='profile' element = { <ProfilePage /> } />
           <Route path='inbox' element = { <InboxPage /> } />
+          <Route path='category/:id' element = { <Catalouge /> } />
         </Routes>
       </Router>
     </SellProvider>

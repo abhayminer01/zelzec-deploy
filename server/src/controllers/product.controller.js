@@ -89,9 +89,25 @@ const getListedProducts = async (req, res) => {
   }
 }
 
+// GET PRODUCTS ACORDING TO CATEGORY
+const getProductsForCategory = async (req, res) => {
+  try {
+    const { category } = req.body;
+    const products = Product.find({ category : category }).sort({ createdAt : -1 });
+
+    res.status(200).json({ success : true, data : products })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error
+    });
+  }
+}
+
 module.exports = {
   createProduct,
   getLatestProducts,
   getProduct,
-  getListedProducts
+  getListedProducts,
+  getProductsForCategory
 }
