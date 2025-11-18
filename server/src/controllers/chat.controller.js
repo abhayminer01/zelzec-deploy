@@ -54,19 +54,34 @@ const getChat = async (req, res) => {
 const getUserChats = async (req, res) => {
     try {
         const chats = await Chat.find({
-            participants: req.user._id
+            participants: req.user._id,
         })
-        .populate("product", "title images")
+        .populate({
+            path: "participants",
+            select: "full_name email mobile avatar _id",
+        })
+        .populate({
+            path: "product",
+            select: "title images user",
+            populate: {
+                path: "user",
+                select: "full_name email avatar _id",
+            },
+        })
         .sort({ updatedAt: -1 });
 
         res.status(200).json({
             success: true,
-            chats
+            currentUserId: req.user._id,
+            chats,
         });
+
     } catch (error) {
-        res.status(500).json({ success: false, error });
+        console.log("🔥 CHAT INBOX ERROR:", error);
+        res.status(500).json({ success: false, error: error.message });
     }
 };
+
 
 
 module.exports = {

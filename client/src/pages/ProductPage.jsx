@@ -9,6 +9,8 @@ import NavBar from '../components/NavBar';
 import { startChat, sendMessage } from '../services/chat-api';
 import axios from 'axios';
 import { getUser } from '../services/auth';
+import { useChat } from '../contexts/ChatContext';
+import ChatManager from '../components/chat/ChatManager';
 
 export default function ProductPage() {
 
@@ -24,6 +26,9 @@ export default function ProductPage() {
 
     const { isLoginOpen, openLogin } = useModal();
     const { isAuthenticated } = useAuth();
+
+    const { openChat } = useChat();
+
 
     // Load product
     useEffect(() => {
@@ -68,7 +73,12 @@ export default function ProductPage() {
         const res = await startChat(product.user, product._id);
 
         setChatId(res.chat._id);
-        setChatOpen(true);
+        openChat({
+            chatId : res.chat._id,
+            user : product.user,
+            product : product,
+            currentUserId : userId
+        });
 
         // Load messages
         const msgRes = await axios.get(
@@ -92,6 +102,7 @@ export default function ProductPage() {
         <div>
             <Toaster position="top-right" />
             <NavBar />
+            <ChatManager />
 
             {isLoginOpen && <LoginComponent />}
 
@@ -144,47 +155,6 @@ export default function ProductPage() {
                 >
                 </button>
             </div> */}
-
-            {/* Chat Modal */}
-            {chatOpen && (
-                <div className="fixed border bg-white w-96 h-[500px] right-5 bottom-5 shadow-xl rounded-lg flex flex-col">
-
-                    <div className="p-3 border-b font-semibold">
-                        Chat with Seller
-                    </div>
-
-                    <div className="flex-1 p-3 overflow-y-auto">
-                        {messages.map((msg) => (
-                            <div
-                                key={msg._id}
-                                className={`p-2 my-2 rounded-xl max-w-[70%] ${
-                                    msg.sender === userId
-                                        ? "bg-blue-200 self-end ml-auto"
-                                        : "bg-gray-200"
-                                }`}
-                            >
-                                {msg.text}
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="flex p-2 border-t">
-                        <input
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                            className="border flex-1 p-2 rounded-lg"
-                            placeholder="Type a message..."
-                        />
-                        <button
-                            onClick={handleSend}
-                            className="bg-primary text-white px-4 ml-2 rounded-lg"
-                        >
-                            Send
-                        </button>
-                    </div>
-
-                </div>
-            )}
         </div>
     );
 }

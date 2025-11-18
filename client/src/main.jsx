@@ -8,11 +8,12 @@ import { ModalProvider } from './contexts/ModalContext';
 import { SellProvider } from './contexts/SellContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
-import InboxPage from './pages/InboxPage';
 import Catalouge from './pages/Catalouge';
+import { ChatProvider } from './contexts/ChatContext';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <ChatProvider>
     <ModalProvider>
     <AuthProvider>
     <SellProvider>
@@ -21,12 +22,12 @@ createRoot(document.getElementById('root')).render(
           <Route path='/' element={ <HomePage /> }/>
           <Route path='product/:id' element={ <ProductPage /> }/>
           <Route path='profile' element = { <ProfilePage /> } />
-          <Route path='inbox' element = { <InboxPage /> } />
           <Route path='category/:id' element = { <Catalouge /> } />
         </Routes>
       </Router>
     </SellProvider>
     </AuthProvider>
     </ModalProvider>
+    </ChatProvider>
   </StrictMode>
 )

@@ -65,7 +65,8 @@ const getLatestProducts = async (req, res) => {
 const getProduct = async(req, res) => {
   const { id } = req.params;
   try {
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
+      .populate("user", "full_name email");
     res.status(200).json({ success : true, data : product })
   } catch (error) {
     console.error('Error fetching product:', error);
