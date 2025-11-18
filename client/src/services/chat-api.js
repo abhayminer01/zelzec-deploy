@@ -21,3 +21,12 @@ export const sendMessage = async (chatId, text) => {
     });
     return req.data.message;
 };
+
+
+export const getInbox = async () => {
+    const res = await api.get('/inbox');
+    return {
+        chats: res.data.chats,
+        currentUserId: res.data.currentUserId
+    };
+};

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import NavBar from '../components/NavBar'
 import { getProductForProfile } from '../services/product-api';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfilePage() {
     const [products, setProducts] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         const fn = async () => {
             const res = await getProductForProfile();
@@ -14,6 +16,7 @@ export default function ProfilePage() {
   return (
     <div>
         <NavBar />
+        <button onClick={() => navigate('/inbox')} className='bg-primary px-10 py-2 m-5 rounded-lg text-white hover:bg-primary/90'>Inbox</button>
         <h1 className='text-primary font-bold text-2xl'>My Products</h1>
         <div className="grid grid-cols-4 gap-4">
             {products.map((p) => (

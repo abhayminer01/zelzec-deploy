@@ -8,6 +8,7 @@ import { ModalProvider } from './contexts/ModalContext';
 import { SellProvider } from './contexts/SellContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
+import InboxPage from './pages/InboxPage';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='/' element={ <HomePage /> }/>
           <Route path='product/:id' element={ <ProductPage /> }/>
           <Route path='profile' element = { <ProfilePage /> } />
+          <Route path='inbox' element = { <InboxPage /> } />
         </Routes>
       </Router>
     </SellProvider>

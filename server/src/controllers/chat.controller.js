@@ -51,8 +51,29 @@ const getChat = async (req, res) => {
     }
 };
 
+const getUserChats = async (req, res) => {
+    try {
+        const chats = await Chat.find({
+            participants: req.user._id
+        })
+        .populate("participants", "full_name email _id")
+        .populate("product", "title images")
+        .sort({ updatedAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            currentUserId: req.user._id,
+            chats
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error });
+    }
+};
+
+
 module.exports = {
     startChat,
     sendMessage,
-    getChat
+    getChat,
+    getUserChats
 };
