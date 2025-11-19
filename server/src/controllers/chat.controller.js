@@ -19,8 +19,31 @@ const startChat = async (req, res) => {
     }
 }
 
+const sendMessage = async (req, res) => {
+    try {
+        const { chatId, text } = req.body;
+        const message = await Message.create({
+            sender : req.user._id,
+            chatId : chatId,
+            text : text
+        });
 
+        res.status(200).json({ success : true, message : "sent succesfully", data : message });
+    } catch (error) {
+        res.status(500).json({ success : false, err : error });
+    }
+}
+
+const getChatHistory = async (req, res) => {
+    try {
+        const { chatId } = req.body;
+        
+    } catch (error) {
+        res.status(500).json({ success : false, err : error });
+    }
+}
 
 module.exports = {
-    startChat
+    startChat,
+    sendMessage
 };
