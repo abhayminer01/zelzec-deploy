@@ -23,10 +23,10 @@ export const sendMessage = async (chatId, text) => {
 };
 
 
-// export const getInbox = async () => {
-//     const res = await api.get('/inbox');
-//     return {
-//         chats: res.data.chats,
-//         currentUserId: res.data.currentUserId
-//     };
-// };
+export const getInbox = async (chatId) => {
+    const res = await api.get('/history', { chatId : chatId });
+    return {
+        chats: res.data.chats,
+        currentUserId: res.data.currentUserId
+    };
+};

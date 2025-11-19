@@ -36,14 +36,58 @@ const sendMessage = async (req, res) => {
 
 const getChatHistory = async (req, res) => {
     try {
-        const { chatId } = req.body;
-        
+        const { chatId } = req.params; // use params, NOT body
+
+        // 1. Validate chat exists
+        const chat = await Chat.findById(chatId)
+            .populate("sender", "full_name email avatar")
+            .populate("product", "user title")
+            .populate({
+                path: "product",
+                populate: {
+                    path: "user",
+                    select: "full_name email avatar"
+                }
+            });
+
+        if (!chat) {
+            return res.status(404).json({
+                success: false,
+                message: "Chat not found"
+            });
+        }
+
+        // 2. Authorization check: only buyer or seller can view
+        const isSender = String(chat.sender._id) === String(req.user._id);
+        const isOwner = String(chat.product.user._id) === String(req.user._id);
+
+        if (!isSender && !isOwner) {
+            return res.status(403).json({
+                success: false,
+                message: "Not allowed to view this chat"
+            });
+        }
+
+        // 3. Fetch all messages for this chat
+        const messages = await Message.find({ chatId })
+            .populate("sender", "full_name email avatar")
+            .sort({ createdAt: 1 }); // oldest → newest
+
+        res.status(200).json({
+            success: true,
+            chat,
+            messages
+        });
+
     } catch (error) {
-        res.status(500).json({ success : false, err : error });
+        console.log("💥 GET CHAT HISTORY ERROR:", error);
+        res.status(500).json({ success: false, err: error.message });
     }
-}
+};
+
 
 module.exports = {
     startChat,
-    sendMessage
+    sendMessage,
+    getChatHistory
 };
