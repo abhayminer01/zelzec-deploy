@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { useModal } from '../contexts/ModalContext';
 import { useSell } from '../contexts/SellContext';
 import { useNavigate } from 'react-router-dom';
-import ChatDropdown from './chat/ChatDropdown';
 
 export default function NavBar() {
   const navigate = useNavigate();

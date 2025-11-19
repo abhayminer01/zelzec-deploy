@@ -21,7 +21,6 @@ import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { visitorCount } from '../services/auth'
 import { useNavigate } from 'react-router-dom';
-import ChatManager from '../components/chat/ChatManager'
 
 export default function HomePage() {
   const [category, setCategory] = useState([]);
@@ -92,7 +91,6 @@ export default function HomePage() {
     <div className='pb-20 md:pb-0'>
         <Toaster position='top-right'/>
         <NavBar />
-        <ChatManager />
         <MobileBottomNav />
         { isLoginOpen && <LoginComponent /> }
         { isRegisterOpen && <RegisterComponent /> }

@@ -9,8 +9,6 @@ import NavBar from '../components/NavBar';
 import { startChat, sendMessage } from '../services/chat-api';
 import axios from 'axios';
 import { getUser } from '../services/auth';
-import { useChat } from '../contexts/ChatContext';
-import ChatManager from '../components/chat/ChatManager';
 
 export default function ProductPage() {
 
@@ -27,7 +25,6 @@ export default function ProductPage() {
     const { isLoginOpen, openLogin } = useModal();
     const { isAuthenticated } = useAuth();
 
-    const { openChat } = useChat();
 
 
     // Load product
@@ -102,7 +99,6 @@ export default function ProductPage() {
         <div>
             <Toaster position="top-right" />
             <NavBar />
-            <ChatManager />
 
             {isLoginOpen && <LoginComponent />}
 

@@ -9,11 +9,9 @@ import { SellProvider } from './contexts/SellContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
 import Catalouge from './pages/Catalouge';
-import { ChatProvider } from './contexts/ChatContext';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ChatProvider>
     <ModalProvider>
     <AuthProvider>
     <SellProvider>
@@ -28,6 +26,5 @@ createRoot(document.getElementById('root')).render(
     </SellProvider>
     </AuthProvider>
     </ModalProvider>
-    </ChatProvider>
   </StrictMode>
 )
