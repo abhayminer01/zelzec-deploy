@@ -3,90 +3,24 @@ const Message = require("../models/message.model");
 
 const startChat = async (req, res) => {
     try {
-        const { seller, product } = req.body;
+        const { productId } = req.body;
 
-        // Find chat between buyer + seller
-        let chat = await Chat.findOne({
-            participants: { $all: [req.user._id, seller] },
-        });
-
-        // If no chat, create new chat
-        if (!chat) {
+        let chat = await Chat.findOne({ product : productId, sender : req.user._id });
+        if(!chat) {
             chat = await Chat.create({
-                participants: [req.user._id, seller],
-                product : product
+                sender : req.user._id,
+                product : productId
             });
         }
 
-        res.status(200).json({ success: true, chat });
+        res.status(200).json({ success : true, data : chat });
     } catch (error) {
-        res.status(500).json({ success: false, error });
+        res.status(500).json({ success : false, err : error });
     }
-};
-
-const sendMessage = async (req, res) => {
-    try {
-        const { chatId, text } = req.body;
-
-        const message = await Message.create({
-            chatId,
-            sender: req.user._id,
-            text
-        });
-
-        res.status(200).json({ success: true, message });
-    } catch (error) {
-        res.status(500).json({ success: false, error });
-    }
-};
-
-const getChat = async (req, res) => {
-    try {
-        const messages = await Message.find({ chatId: req.params.chatId })
-            .sort({ createdAt: 1 });
-
-        res.status(200).json({ success: true, messages });
-    } catch (error) {
-        res.status(500).json({ success: false, error });
-    }
-};
-
-const getUserChats = async (req, res) => {
-    try {
-        const chats = await Chat.find({
-            participants: req.user._id,
-        })
-        .populate({
-            path: "participants",
-            select: "full_name email mobile avatar _id",
-        })
-        .populate({
-            path: "product",
-            select: "title images user",
-            populate: {
-                path: "user",
-                select: "full_name email avatar _id",
-            },
-        })
-        .sort({ updatedAt: -1 });
-
-        res.status(200).json({
-            success: true,
-            currentUserId: req.user._id,
-            chats,
-        });
-
-    } catch (error) {
-        console.log("🔥 CHAT INBOX ERROR:", error);
-        res.status(500).json({ success: false, error: error.message });
-    }
-};
+}
 
 
 
 module.exports = {
-    startChat,
-    sendMessage,
-    getChat,
-    getUserChats
+    startChat
 };

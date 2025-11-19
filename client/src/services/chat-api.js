@@ -5,28 +5,28 @@ const api = axios.create({
     withCredentials : true
 });
 
-export const startChat = async (sellerId, productId) => {
+export const startChat = async (productId) => {
     try {
-        const req = await api.post('/start', { seller : sellerId, product : productId });
+        const req = await api.post('/start', { productId : productId });
         return req.data;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const sendMessage = async (chatId, text) => {
-    const req = await api.post("/send", {
-        chatId,
-        text
-    });
-    return req.data.message;
-};
+// export const sendMessage = async (chatId, text) => {
+//     const req = await api.post("/send", {
+//         chatId,
+//         text
+//     });
+//     return req.data.message;
+// };
 
 
-export const getInbox = async () => {
-    const res = await api.get('/inbox');
-    return {
-        chats: res.data.chats,
-        currentUserId: res.data.currentUserId
-    };
-};
+// export const getInbox = async () => {
+//     const res = await api.get('/inbox');
+//     return {
+//         chats: res.data.chats,
+//         currentUserId: res.data.currentUserId
+//     };
+// };

@@ -32,6 +32,7 @@ export default function ProductPage() {
         async function fetchProduct() {
             try {
                 const res = await getProduct(id);
+                console.log(res.data)
                 setProduct(res.data);
             } catch (error) {
                 console.log(error);

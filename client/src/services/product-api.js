@@ -35,6 +35,7 @@ export const getProductsForHome = async () => {
   }
 }
 
+// GET PRODUCT DATAq
 export const getProduct = async (id) => {
   try {
     const req = await api.get(`/${id}`);
