@@ -23,7 +23,7 @@ export const sendMessage = async (chatId, text) => {
 };
 
 
-export const getInbox = async (chatId) => {
+export const getHistory = async (chatId) => {
     const res = await api.get('/history', { chatId : chatId });
     return {
         chats: res.data.chats,
