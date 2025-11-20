@@ -117,101 +117,125 @@ export default function HomePage() {
             })}
           </div>
         </div>
-    <div className="px-4 md:px-10 mt-10 md:mt-14 mb-20">
-      <div className="bg-border/40 w-full rounded-lg px-4 md:px-10 py-6 md:py-10">
-        <h1 className="text-[18px] md:text-[20px] font-semibold mb-6">
-          Featured Listings
-        </h1>
 
-        {products.length === 0 ? (
-          <p className="text-center text-gray-500">No products found</p>
-        ) : (
-          <>
-            <div className="md:hidden flex gap-5 overflow-x-auto pb-4 -mx-4 px-4">
-              {products.map((p) => {
-                const Icon = Icons[p.category?.icon] || Package;
-
-                return (
-                  <div
-                    key={p._id}
-                    className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition  flex flex-col cursor-pointer min-w-[280px] flex-shrink-0"
-                  >
-                    <div className="w-full h-36 overflow-hidden rounded-md">
-                      <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${p.images?.[0]?.filename}`}
-                        alt={p.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-
-                    <div className="mt-3 p-3 flex flex-col flex-grow justify-between">
-                      <h2 className="text-sm font-semibold line-clamp-1">
-                        {p.title}
-                      </h2>
-                      <p className="text-xs text-gray-600 line-clamp-2 mt-1">{p.description}</p>
-
-                      <div className="flex items-center gap-1 text-gray-500 text-xs mt-2">
-                        {Icon && <Icon className="w-4 h-4 text-primary" />}
-                        <span>{p.category?.title}</span>
-                      </div>
-
-                      <p className="text-primary font-bold mt-1">
-                        ₹{p.price.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+        {/* Featured Listings Section */}
+        <div className="px-4 md:px-10 mt-10 md:mt-14 mb-20">
+          <div className="bg-white w-full rounded-xl shadow-sm border border-gray-200 px-6 md:px-8 py-8 md:py-10">
+            <div className="mb-8">
+              <h1 className="text-xl md:text-2xl font-bold text-gray-900">Featured Listings</h1>
+              <p className="text-sm text-gray-500 mt-1">Discover amazing products</p>
             </div>
 
-            <div className="hidden md:grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
-              {products.map((p) => {
-                const Icon = Icons[p.category?.icon] || Package;
+            {products.length === 0 ? (
+              <div className="text-center py-16">
+                <Icons.Package className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500 text-lg">No products found</p>
+              </div>
+            ) : (
+              <>
+                {/* Mobile View */}
+                <div className="md:hidden">
+                  <div className="flex gap-4 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory">
+                    {products.map((p) => {
+                      const Icon = Icons[p.category?.icon] || Icons.Package;
 
-                return (
-                  <div
-                    onClick={() => handleCardClick(p._id)}
-                    key={p._id}
-                    className="bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md transition flex flex-col cursor-pointer"
-                  >
-                    <div className="w-full h-36 md:h-65 overflow-hidden rounded-md">
-                      <img
-                        src={`http://localhost:5000${p.images?.[0]?.url}`}
-                        alt={p.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                      return (
+                        <div
+                          key={p._id}
+                          onClick={() => handleCardClick(p._id)}
+                          className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer min-w-[280px] snap-start"
+                        >
+                          <div className="relative w-full h-48 bg-gray-100">
+                            <img
+                              src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${p.images?.[0]?.filename}`}
+                              alt={p.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
 
-                    <div className="mt-3 p-3 flex flex-col flex-grow justify-between">
-                      <h2 className="text-2xl md:text-base font-extrabold line-clamp-1">
-                        {p.title}
-                      </h2>
-                      <p className="text-xs text-gray-600 line-clamp-2 mt-1">{p.description}</p>
+                          <div className="p-4">
+                            <h2 className="text-base font-semibold text-gray-900 mb-2 line-clamp-1">
+                              {p.title}
+                            </h2>
+                            
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-3 min-h-[40px]">
+                              {p.description}
+                            </p>
 
-                      <div className="flex items-center gap-1 justify-between mt-1 text-gray-500 text-xs md:text-sm">
-                        <div className='flex items-center gap-1'>
-                          {Icon && <Icon className="size-4 text-primary" />}
-                          <span>{p.category?.title}</span>
+                            <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
+                              {Icon && <Icon className="w-4 h-4 text-primary" />}
+                              <span>{p.category?.title}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                              <p className="text-xl font-bold text-primary">
+                                ₹{p.price.toLocaleString()}
+                              </p>
+                              <div className="flex items-center gap-1 text-xs text-gray-500">
+                                <Icons.MapPin className="w-3 h-3" />
+                                <span>{p.location.place || 'N/A'}</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className='flex items-center gap-1'>
-                          <Icons.MapPin className="size-4 text-primary" />
-                          <span>location : {p.location.place || "nill"}</span>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Desktop View */}
+                <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products.map((p) => {
+                    const Icon = Icons[p.category?.icon] || Icons.Package;
+
+                    return (
+                      <div
+                        onClick={() => handleCardClick(p._id)}
+                        key={p._id}
+                        className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-300 cursor-pointer"
+                      >
+                        <div className="relative w-full h-52 bg-gray-100 overflow-hidden">
+                          <img
+                            src={`http://localhost:5000${p.images?.[0]?.url}`}
+                            alt={p.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+
+                        <div className="p-4">
+                          <h2 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                            {p.title}
+                          </h2>
+                          
+                          <p className="text-sm text-gray-600 line-clamp-2 mb-4 min-h-[40px]">
+                            {p.description}
+                          </p>
+
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2 text-sm text-gray-500">
+                              {Icon && <Icon className="w-4 h-4 text-primary" />}
+                              <span>{p.category?.title}</span>
+                            </div>
+
+                            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                              <p className="text-2xl font-bold text-primary">
+                                ₹{p.price.toLocaleString()}
+                              </p>
+                              <div className="flex items-center gap-1 text-sm text-gray-500">
+                                <Icons.MapPin className="w-4 h-4" />
+                                <span className="text-xs">{p.location.place || 'N/A'}</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-
-                      <p className="text-primary font-bold text-[20px] mt-1">
-                        ₹{p.price.toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  
+                    );
+                  })}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
 
         <div className='flex flex-col bg-primary w-screen h-70 gap-4 justify-center items-center'>
             <h1 className='text-white text-3xl'>Ready to Sell?</h1>

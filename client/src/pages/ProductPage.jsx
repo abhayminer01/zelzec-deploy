@@ -1,3 +1,4 @@
+// src/pages/ProductPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getProduct } from '../services/product-api';
@@ -6,112 +7,138 @@ import { useAuth } from '../contexts/AuthContext';
 import LoginComponent from '../components/LoginComponent';
 import { toast, Toaster } from 'sonner';
 import NavBar from '../components/NavBar';
-import { startChat, sendMessage } from '../services/chat-api';
-import axios from 'axios';
+import { startChat } from '../services/chat-api';
 import { getUser } from '../services/auth';
+import { useChat } from '../contexts/ChatContext';
 
 export default function ProductPage() {
-
     const { id } = useParams();
 
-    const [product, setProduct] = useState({});
-    const [chatOpen, setChatOpen] = useState(false);
-    const [chatId, setChatId] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [text, setText] = useState("");
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [isOwner, setIsOwner] = useState(false);
-    const [userId, setuserId] = useState(null);
+    const [userId, setUserId] = useState(null);
 
     const { isLoginOpen, openLogin } = useModal();
     const { isAuthenticated } = useAuth();
-
-
+    const { openChat } = useChat();
 
     // Load product
     useEffect(() => {
-        async function fetchProduct() {
+        const fetchProduct = async () => {
             try {
+                setLoading(true);
                 const res = await getProduct(id);
                 setProduct(res.data);
             } catch (error) {
-                console.log(error);
+                console.error('Failed to load product:', error);
+                toast.error('Could not load product details.');
+            } finally {
+                setLoading(false);
             }
-        }
-        fetchProduct();
+        };
+
+        if (id) fetchProduct();
     }, [id]);
 
-    // Check owner only after product is loaded
+    // Check owner
     useEffect(() => {
-        async function checkOwner() {
-            if (!product?.user) return;
+        const checkOwner = async () => {
+            if (!product || !product.user) return;
 
-            const user = await getUser();
-            if (!user) return;
+            try {
+                const user = await getUser();
+                if (!user) return;
 
-            setuserId(user._id);   // always store user id
-
-            if (user._id === product.user) {
-                setIsOwner(true);
+                setUserId(user._id);
+                setIsOwner(user._id === product.user);
+            } catch (err) {
+                console.error('Failed to check ownership:', err);
             }
-        }
+        };
+
         checkOwner();
     }, [product]);
 
-
     const handleContact = async () => {
         if (!isAuthenticated) {
-            toast.info("You need to be logged in", {
-                description: "to contact sellers",
+            toast.info('You need to be logged in', {
+                description: 'to contact sellers',
             });
             openLogin();
             return;
         }
 
-        const res = await startChat(product.user, product._id);
+        // 🔒 Block if product isn't ready
+        if (!product || !product._id || !product.user) {
+            toast.error('Product data is incomplete. Please refresh.');
+            return;
+        }
 
-        setChatId(res.chat._id);
-        openChat({
-            chatId : res.chat._id,
-            user : product.user,
-            product : product,
-            currentUserId : userId
-        });
+        try {
+            // ✅ Only pass productId (backend expects this)
+            const response = await startChat(product._id);
 
-        // Load messages
-        const msgRes = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/v1/chat/${res.chat._id}`,
-            { withCredentials: true }
+            // 🔒 Validate response shape
+            if (!response || typeof response !== 'object') {
+                throw new Error('Invalid response format from chat service');
+            }
+
+            if (!response.chat || !response.chat._id) {
+                throw new Error('Chat creation failed: Missing chat ID');
+            }
+
+            openChat({
+                chatId: response.chat._id,
+                user: product.user,
+                product: product,
+                currentUserId: userId,
+            });
+
+        } catch (err) {
+            console.error('Chat initiation failed:', err);
+            toast.error('Unable to start chat. Please try again later.');
+        }
+    };
+
+    // 🟡 Loading state
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Toaster position="top-right" />
+                <NavBar />
+                <p className="text-lg">Loading product...</p>
+            </div>
         );
+    }
 
-        setMessages(msgRes.data.messages);
-    };
-
-    const handleSend = async () => {
-        if (!text.trim()) return;
-
-        const msg = await sendMessage(chatId, text);
-
-        setMessages(prev => [...prev, msg]);
-        setText("");
-    };
+    // 🔴 Product not found
+    if (!product) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <Toaster position="top-right" />
+                <NavBar />
+                <p className="text-lg text-red-500">Product not found.</p>
+            </div>
+        );
+    }
 
     return (
         <div>
             <Toaster position="top-right" />
             <NavBar />
-
             {isLoginOpen && <LoginComponent />}
 
             {isOwner ? (
-                // ⭐ PRODUCT OWNER CONTROLS
                 <div className="mt-10 border w-90 px-10 py-10">
                     <h1 className="text-xl font-semibold">Your Product</h1>
-
-                    <img src={`http://localhost:5000${product.images?.[0]?.url}`} alt="" />
-
+                    <img
+                        src={`http://localhost:5000${product.images?.[0]?.url}`}
+                        alt={product.title}
+                        className="max-w-full h-auto"
+                    />
                     <h2 className="text-lg mt-2">Title: {product.title}</h2>
                     <p className="text-gray-600">{product.description}</p>
-
                     <div className="flex gap-3 mt-4">
                         <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
                             Edit Product
@@ -122,11 +149,13 @@ export default function ProductPage() {
                     </div>
                 </div>
             ) : (
-                // ⭐ NORMAL VISITOR UI (show contact button)
                 <div className="mt-10 border w-90 px-10 py-10">
-                    <img src={`http://localhost:5000${product.images?.[0]?.url}`} alt="" />
+                    <img
+                        src={`http://localhost:5000${product.images?.[0]?.url}`}
+                        alt={product.title}
+                        className="max-w-full h-auto"
+                    />
                     <h1 className="text-xl font-semibold">Title: {product.title}</h1>
-
                     <button
                         onClick={handleContact}
                         className="bg-primary px-15 py-2 rounded-lg text-white mt-5 hover:bg-primary/80"
@@ -135,22 +164,6 @@ export default function ProductPage() {
                     </button>
                 </div>
             )}
-
-            {/* <div className="mt-10 border w-90 px-10 py-10">
-                <img src={`http://localhost:5000${product.images?.[0]?.url}`} alt="" />
-                <h1>Title: {product.title}</h1>
-
-                <button
-                    onClick={handleContact}
-                    disabled={isOwner}
-                    className={
-                        isOwner
-                            ? "bg-red-500/50 px-15 py-2 rounded-lg text-white mt-5 cursor-not-allowed"
-                            : "bg-primary px-15 py-2 rounded-lg text-white mt-5 hover:bg-primary/80"
-                    }
-                >
-                </button>
-            </div> */}
         </div>
     );
 }

@@ -6,15 +6,18 @@ import HomePage from './pages/HomePage';
 import { AuthProvider } from './contexts/AuthContext';
 import { ModalProvider } from './contexts/ModalContext';
 import { SellProvider } from './contexts/SellContext';
+import { ChatProvider } from './contexts/ChatContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
 import Catalouge from './pages/Catalouge';
+import ChatWidget from './components/ChatWidget.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ModalProvider>
     <AuthProvider>
     <SellProvider>
+    <ChatProvider>
       <Router>
         <Routes>
           <Route path='/' element={ <HomePage /> }/>
@@ -23,6 +26,8 @@ createRoot(document.getElementById('root')).render(
           <Route path='category/:id' element = { <Catalouge /> } />
         </Routes>
       </Router>
+      <ChatWidget />
+    </ChatProvider>
     </SellProvider>
     </AuthProvider>
     </ModalProvider>
