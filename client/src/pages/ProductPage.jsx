@@ -79,18 +79,18 @@ export default function ProductPage() {
         try {
             // ✅ Only pass productId (backend expects this)
             const response = await startChat(product._id);
-
+            console.log(response.data._id)
             // 🔒 Validate response shape
             if (!response || typeof response !== 'object') {
                 throw new Error('Invalid response format from chat service');
             }
 
-            if (!response.chat || !response.chat._id) {
+            if (!response.data || !response.data._id) {
                 throw new Error('Chat creation failed: Missing chat ID');
             }
 
             openChat({
-                chatId: response.chat._id,
+                chatId: response.data._id,
                 user: product.user,
                 product: product,
                 currentUserId: userId,

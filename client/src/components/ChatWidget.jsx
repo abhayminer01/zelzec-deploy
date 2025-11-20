@@ -1,7 +1,7 @@
 // src/components/ChatWidget.jsx
 import React, { useRef, useEffect } from 'react';
 import { useChat } from '../contexts/ChatContext';
-import { sendMessage } from '../services/chat-api';
+import { getHistory, sendMessage } from '../services/chat-api';
 import axios from 'axios';
 
 const ChatWidget = () => {
@@ -17,10 +17,7 @@ const ChatWidget = () => {
         if (isOpen && chatId) {
             const loadMessages = async () => {
                 try {
-                    const res = await axios.get(
-                        `${import.meta.env.VITE_BACKEND_URL}/api/v1/chat/${chatId}`,
-                        { withCredentials: true }
-                    );
+                    const res = await getHistory(chatId);
                     updateMessages(res.data.messages);
                 } catch (err) {
                     console.error("Failed to load messages", err);
