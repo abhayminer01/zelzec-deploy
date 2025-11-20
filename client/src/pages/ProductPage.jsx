@@ -29,6 +29,7 @@ export default function ProductPage() {
             try {
                 setLoading(true);
                 const res = await getProduct(id);
+                console.log(res.data)
                 setProduct(res.data);
             } catch (error) {
                 console.error('Failed to load product:', error);

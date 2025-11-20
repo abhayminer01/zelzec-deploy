@@ -3,90 +3,91 @@ const Message = require("../models/message.model");
 
 const startChat = async (req, res) => {
     try {
-        const { seller, product } = req.body;
+        const { productId } = req.body;
 
-        // Find chat between buyer + seller
-        let chat = await Chat.findOne({
-            participants: { $all: [req.user._id, seller] },
-        });
-
-        // If no chat, create new chat
-        if (!chat) {
+        let chat = await Chat.findOne({ product : productId, sender : req.user._id });
+        if(!chat) {
             chat = await Chat.create({
-                participants: [req.user._id, seller],
-                product : product
+                sender : req.user._id,
+                product : productId
             });
         }
 
-        res.status(200).json({ success: true, chat });
+        res.status(200).json({ success : true, data : chat });
     } catch (error) {
-        res.status(500).json({ success: false, error });
+        res.status(500).json({ success : false, err : error });
     }
-};
+}
 
 const sendMessage = async (req, res) => {
     try {
         const { chatId, text } = req.body;
-
         const message = await Message.create({
-            chatId,
-            sender: req.user._id,
-            text
+            sender : req.user._id,
+            chatId : chatId,
+            text : text
         });
 
-        res.status(200).json({ success: true, message });
+        res.status(200).json({ success : true, message : "sent succesfully", data : message });
     } catch (error) {
-        res.status(500).json({ success: false, error });
+        res.status(500).json({ success : false, err : error });
     }
-};
+}
 
-const getChat = async (req, res) => {
+const getChatHistory = async (req, res) => {
     try {
-        const messages = await Message.find({ chatId: req.params.chatId })
-            .sort({ createdAt: 1 });
+        const { chatId } = req.params; // use params, NOT body
 
-        res.status(200).json({ success: true, messages });
-    } catch (error) {
-        res.status(500).json({ success: false, error });
-    }
-};
+        // 1. Validate chat exists
+        const chat = await Chat.findById(chatId)
+            .populate("sender", "full_name email avatar")
+            .populate("product", "user title")
+            .populate({
+                path: "product",
+                populate: {
+                    path: "user",
+                    select: "full_name email avatar"
+                }
+            });
 
-const getUserChats = async (req, res) => {
-    try {
-        const chats = await Chat.find({
-            participants: req.user._id,
-        })
-        .populate({
-            path: "participants",
-            select: "full_name email mobile avatar _id",
-        })
-        .populate({
-            path: "product",
-            select: "title images user",
-            populate: {
-                path: "user",
-                select: "full_name email avatar _id",
-            },
-        })
-        .sort({ updatedAt: -1 });
+        if (!chat) {
+            return res.status(404).json({
+                success: false,
+                message: "Chat not found"
+            });
+        }
+
+        // 2. Authorization check: only buyer or seller can view
+        const isSender = String(chat.sender._id) === String(req.user._id);
+        const isOwner = String(chat.product.user._id) === String(req.user._id);
+
+        if (!isSender && !isOwner) {
+            return res.status(403).json({
+                success: false,
+                message: "Not allowed to view this chat"
+            });
+        }
+
+        // 3. Fetch all messages for this chat
+        const messages = await Message.find({ chatId })
+            .populate("sender", "full_name email avatar")
+            .sort({ createdAt: 1 }); // oldest → newest
 
         res.status(200).json({
             success: true,
-            currentUserId: req.user._id,
-            chats,
+            chat,
+            messages
         });
 
     } catch (error) {
-        console.log("🔥 CHAT INBOX ERROR:", error);
-        res.status(500).json({ success: false, error: error.message });
+        console.log("💥 GET CHAT HISTORY ERROR:", error);
+        res.status(500).json({ success: false, err: error.message });
     }
 };
-
 
 
 module.exports = {
     startChat,
     sendMessage,
-    getChat,
-    getUserChats
+    getChatHistory
 };

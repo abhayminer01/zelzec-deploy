@@ -5,9 +5,9 @@ const api = axios.create({
     withCredentials : true
 });
 
-export const startChat = async (sellerId, productId) => {
+export const startChat = async (productId) => {
     try {
-        const req = await api.post('/start', { seller : sellerId, product : productId });
+        const req = await api.post('/start', { productId : productId });
         return req.data;
     } catch (error) {
         console.log(error);
@@ -23,8 +23,8 @@ export const sendMessage = async (chatId, text) => {
 };
 
 
-export const getInbox = async () => {
-    const res = await api.get('/inbox');
+export const getHistory = async (chatId) => {
+    const res = await api.get('/history', { chatId : chatId });
     return {
         chats: res.data.chats,
         currentUserId: res.data.currentUserId
