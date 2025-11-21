@@ -36,7 +36,7 @@ const sendMessage = async (req, res) => {
 
 const getChatHistory = async (req, res) => {
     try {
-        const { chatId } = req.params; // use params, NOT body
+        const { chatId } = req.params;
 
         // 1. Validate chat exists
         const chat = await Chat.findById(chatId)
