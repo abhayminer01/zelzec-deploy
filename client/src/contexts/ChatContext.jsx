@@ -42,12 +42,20 @@ export const ChatProvider = ({ children }) => {
         }));
     };
 
+    const appendMessage = (message) => {
+        setChatState(prev => ({
+            ...prev,
+            messages: [...prev.messages, message]
+        }));
+    };
+
+
     const toggleMinimize = () => {
         setChatState(prev => ({ ...prev, isMinimized: !prev.isMinimized }));
     };
 
     const updateMessages = (newMessages) => {
-        setChatState(prev => ({ ...prev, messages: newMessages }));
+        setChatState(prev => ({ ...prev, messages: newMessages || [] }));
     };
 
     const updateText = (text) => {
@@ -62,6 +70,7 @@ export const ChatProvider = ({ children }) => {
             toggleMinimize,
             updateMessages,
             updateText,
+            appendMessage
         }}>
             {children}
         </ChatContext.Provider>

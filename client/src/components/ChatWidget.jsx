@@ -5,7 +5,7 @@ import { getHistory, sendMessage } from '../services/chat-api';
 import axios from 'axios';
 
 const ChatWidget = () => {
-    const { chatState, closeChat, toggleMinimize, updateMessages, updateText } = useChat();
+    const { chatState, closeChat, toggleMinimize, updateMessages, updateText, appendMessage } = useChat();
     const { isOpen, isMinimized, chatId, messages, text } = chatState;
     const messagesEndRef = useRef(null);
 
@@ -39,7 +39,7 @@ const ChatWidget = () => {
         try {
             const response = await sendMessage(chatId, text);
             const newMessage = response.data; // ✅ FIX: extract .data
-            updateMessages(prev => [...prev, newMessage]);
+            appendMessage(newMessage);
             updateText("");
         } catch (err) {
             console.error("Failed to send message", err);
