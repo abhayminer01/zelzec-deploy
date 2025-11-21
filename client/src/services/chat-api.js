@@ -20,7 +20,7 @@ export const sendMessage = async (chatId, text) => {
         text
     });
     
-    return req.data.data;
+    return req.data;
 };
 
 
