@@ -25,9 +25,10 @@ export const sendMessage = async (chatId, text) => {
 
 
 export const getHistory = async (chatId) => {
-    const res = await api.get('/history', { chatId : chatId });
-    return {
-        chats: res.data.chats,
-        currentUserId: res.data.currentUserId
-    };
+    try {
+        const res = await api.get(`/history/${chatId}`);
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
 };
