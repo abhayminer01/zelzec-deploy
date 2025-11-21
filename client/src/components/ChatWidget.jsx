@@ -85,7 +85,7 @@ const ChatWidget = () => {
 
             {!isMinimized && (
                 <div className="p-3 h-64 overflow-y-auto bg-purple-50">
-                    {messages.map((msg, idx) => {
+                    {Array.isArray(messages) && messages.map((msg, idx) => {
                         // ✅ Safety check to prevent white screen
                         if (!msg || typeof msg.text !== 'string') return null;
 

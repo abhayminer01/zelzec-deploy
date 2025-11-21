@@ -15,12 +15,16 @@ export const startChat = async (productId) => {
 }
 
 export const sendMessage = async (chatId, text) => {
-    const req = await api.post("/send", {
-        chatId,
-        text
-    });
-    
-    return req.data;
+    try {
+        const req = await api.post("/send", {
+            chatId,
+            text
+        });
+        
+        return req.data;
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 
