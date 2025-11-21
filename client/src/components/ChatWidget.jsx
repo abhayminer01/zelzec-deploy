@@ -18,7 +18,7 @@ const ChatWidget = () => {
             const loadMessages = async () => {
                 try {
                     const res = await getHistory(chatId);
-                    updateMessages(res.data.messages);
+                    updateMessages(res.messages);
                 } catch (err) {
                     console.error("Failed to load messages", err);
                 }
