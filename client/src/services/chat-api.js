@@ -26,5 +26,8 @@ export const sendMessage = async (chatId, text) => {
 
 export const getHistory = async (chatId) => {
     const res = await api.get('/history', { chatId : chatId });
-    return res.data;
+    return {
+        chats: res.data.chats,
+        currentUserId: res.data.currentUserId
+    };
 };
