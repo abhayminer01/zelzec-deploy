@@ -85,9 +85,56 @@ const getChatHistory = async (req, res) => {
     }
 };
 
+// Add to chat.controller.js
+const getMyChats = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Find all chats where user is sender OR product owner
+        const chats = await Chat.find({
+            $or: [
+                { sender: userId },
+                { 'product.user': userId }
+            ]
+        })
+        .populate('sender', 'full_name email avatar')
+        .populate({
+            path: 'product',
+            populate: {
+                path: 'user',
+                select: 'full_name email avatar'
+            }
+        })
+        .sort({ updatedAt: -1 }); // Latest first
+
+        // Fetch latest message for each chat
+        const chatsWithPreview = await Promise.all(chats.map(async (chat) => {
+            const latestMessage = await Message.findOne({ chatId: chat._id })
+                .sort({ createdAt: -1 })
+                .select('text createdAt');
+            return {
+                ...chat.toObject(),
+                latestMessage: latestMessage?.text || 'No messages yet',
+                lastMessageAt: latestMessage?.createdAt || chat.createdAt
+            };
+        }));
+
+        res.status(200).json({
+            success: true,
+            chats: chatsWithPreview,
+            currentUserId: userId
+        });
+
+    } catch (error) {
+        console.error("Get my chats error:", error);
+        res.status(500).json({ success: false, err: error.message });
+    }
+};
+
 
 module.exports = {
     startChat,
     sendMessage,
-    getChatHistory
+    getChatHistory,
+    getMyChats
 };

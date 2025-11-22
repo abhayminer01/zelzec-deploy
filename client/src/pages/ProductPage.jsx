@@ -11,6 +11,15 @@ import { startChat } from '../services/chat-api';
 import { getUser } from '../services/auth';
 import { useChat } from '../contexts/ChatContext';
 
+// Components
+import ProductImageCarousel from '../components/ProductImageCarousel';
+import ProductOverview from '../components/ProductOverview';
+import ProductMap from '../components/ProductMap';
+import PreviousSearches from '../components/PreviousSearches';
+import ProductInfoCard from '../components/ProductInfoCard';
+import Footer from '../components/Footer';
+import MobileBottomNav from '../components/MobileBottomNav';
+
 export default function ProductPage() {
     const { id } = useParams();
 
@@ -29,7 +38,6 @@ export default function ProductPage() {
             try {
                 setLoading(true);
                 const res = await getProduct(id);
-                console.log(res.data)
                 setProduct(res.data);
             } catch (error) {
                 console.error('Failed to load product:', error);
@@ -70,22 +78,14 @@ export default function ProductPage() {
             return;
         }
 
-        // 🔒 Block if product isn't ready
         if (!product || !product._id || !product.user) {
             toast.error('Product data is incomplete. Please refresh.');
             return;
         }
 
         try {
-            // ✅ Only pass productId (backend expects this)
             const response = await startChat(product._id);
-            console.log(response.data._id)
-            // 🔒 Validate response shape
-            if (!response || typeof response !== 'object') {
-                throw new Error('Invalid response format from chat service');
-            }
-
-            if (!response.data || !response.data._id) {
+            if (!response?.data?._id) {
                 throw new Error('Chat creation failed: Missing chat ID');
             }
 
@@ -108,6 +108,7 @@ export default function ProductPage() {
             <div className="flex items-center justify-center min-h-screen">
                 <Toaster position="top-right" />
                 <NavBar />
+                <MobileBottomNav />
                 <p className="text-lg">Loading product...</p>
             </div>
         );
@@ -119,6 +120,7 @@ export default function ProductPage() {
             <div className="flex items-center justify-center min-h-screen">
                 <Toaster position="top-right" />
                 <NavBar />
+                <MobileBottomNav />
                 <p className="text-lg text-red-500">Product not found.</p>
             </div>
         );
@@ -128,43 +130,69 @@ export default function ProductPage() {
         <div>
             <Toaster position="top-right" />
             <NavBar />
+            <MobileBottomNav />
+
             {isLoginOpen && <LoginComponent />}
 
-            {isOwner ? (
-                <div className="mt-10 border w-90 px-10 py-10">
-                    <h1 className="text-xl font-semibold">Your Product</h1>
-                    <img
-                        src={`http://localhost:5000${product.images?.[0]?.url}`}
-                        alt={product.title}
-                        className="max-w-full h-auto"
+            {/* Breadcrumb */}
+            <div className="px-4 md:px-10 py-2 text-sm text-gray-500">
+                <span>Kerala</span> {' > '}
+                <span>Motors</span> {' > '}
+                <span>Used Cars</span> {' > '}
+                <span>Ford</span> {' > '}
+                <span>{product.title}</span>
+            </div>
+
+            <div className="flex flex-col lg:flex-row gap-6 px-4 md:px-10 pb-10">
+
+                {/* Left: Image Carousel */}
+                <div className="lg:w-2/3">
+                    <ProductImageCarousel images={product.images} />
+                </div>
+
+               
+                <div className="lg:w-1/3">
+                    <ProductInfoCard
+                        product={product}
+                        onChatClick={handleContact}
+                        isOwner={isOwner}
+                        currentUserId={userId}
                     />
-                    <h2 className="text-lg mt-2">Title: {product.title}</h2>
-                    <p className="text-gray-600">{product.description}</p>
-                    <div className="flex gap-3 mt-4">
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-                            Edit Product
-                        </button>
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-lg">
-                            Delete Product
-                        </button>
+                </div>
+
+            </div>
+
+            {/* Product Overview + Map */}
+            <div className="bg-white p-6 md:p-10">
+                <div className="flex flex-col md:flex-row justify-between px-50 gap-20">
+                    <div className="md:w-2/3">
+                        <h1 className="text-2xl font-bold">{product.title}</h1>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                            <span>📅 {new Date(product.createdAt).getFullYear()}</span>
+                            <span>📏 {product.form_data?.mileage || 'N/A'} km</span>
+                            <span>🚗 {product.form_data?.transmission || 'N/A'}</span>
+                        </div>
+                        <hr className="my-4" />
+                        <ProductOverview product={product} />
+                    </div>
+                    <div className="md:w-1/3">
+                        <ProductMap location={product.location} />
                     </div>
                 </div>
-            ) : (
-                <div className="mt-10 border w-90 px-10 py-10">
-                    <img
-                        src={`http://localhost:5000${product.images?.[0]?.url}`}
-                        alt={product.title}
-                        className="max-w-full h-auto"
-                    />
-                    <h1 className="text-xl font-semibold">Title: {product.title}</h1>
-                    <button
-                        onClick={handleContact}
-                        className="bg-primary px-15 py-2 rounded-lg text-white mt-5 hover:bg-primary/80"
-                    >
-                        Contact
-                    </button>
-                </div>
-            )}
+            </div>
+
+            
+
+            <div className='flex flex-col justify-between px-50 py-8 gap-2 bg-gray-100 '>
+                <p>Previous Searches</p>
+                <PreviousSearches />
+            </div>
+
+            {/* Footer */}
+            <div className="mt-20">
+                <Footer/>
+            </div>
+            
         </div>
     );
 }

@@ -36,3 +36,9 @@ export const getHistory = async (chatId) => {
         console.log(error)
     }
 };
+
+// Add to your existing chat-api.js
+export const getMyChats = async () => {
+    const res = await api.get('/my-chats'); // ✅ We'll create this route
+    return res.data; // Expected: { chats: [...], currentUserId: "..." }
+};
