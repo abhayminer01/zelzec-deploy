@@ -5,8 +5,8 @@ import { getHistory, sendMessage } from '../services/chat-api';
 import { toast } from 'sonner';
 
 const ChatWidget = () => {
-    const { chatState, updateMessages, updateText, closeChat, toggleMinimize } = useChat();
-    const { activeChatId, messages, text, currentUserId, isMinimized } = chatState;
+    const { chatState, closeChat, toggleMinimize, updateMessages, updateText } = useChat();
+    const { isOpen, isMinimized, chatId, messages, text } = chatState;
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -44,7 +44,8 @@ const ChatWidget = () => {
         if (!text?.trim()) return;
 
         try {
-            const newMessage = await sendMessage(activeChatId, text.trim());
+            const response = await sendMessage(chatId, text);
+            const newMessage = response.data; // ✅ FIX: extract .data
             updateMessages(prev => [...prev, newMessage]);
             updateText("");
         } catch (err) {
