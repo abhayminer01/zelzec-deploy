@@ -8,6 +8,7 @@ router.post("/create", upload.array("images", 10), userAuthMiddleware, productCo
 router.get("/profile", userAuthMiddleware, productController.getListedProducts);
 router.get("/", productController.getLatestProducts);
 router.get("/:id", productController.getProduct);
+router.get('/find-by-category/:id', productController.getProductsForCategory);
 
 
 module.exports = router;

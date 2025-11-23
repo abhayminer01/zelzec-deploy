@@ -3,6 +3,9 @@ import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import NavBar from '../components/NavBar';
 import Footer from '../components/Footer';
 import MobileBottomNav from '../components/MobileBottomNav';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { getProductsOfCategory } from '../services/product-api';
 
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -81,6 +84,18 @@ const CataloguePage = () => {
     transmission: true
   });
 
+  const [products, setProducts] = useState([]);
+
+  const params = useParams();
+  useEffect(() => {
+    const fn = async () => {
+      const res = await getProductsOfCategory(params.id);
+      setProducts(res.data);
+      console.log(res)
+    }
+    fn();
+  }, []);
+
   const [page, setPage] = useState(1);
 
   const toggleSection = (section) => {
@@ -105,6 +120,7 @@ const CataloguePage = () => {
     featured: true
   }));
 
+  const navigate = useNavigate();
   return (
     <div className="bg-white">
       <NavBar />
@@ -112,14 +128,14 @@ const CataloguePage = () => {
       
       <div className="max-w-[1400px] mx-auto px-4 py-6">
         {/* Breadcrumb */}
-        <div className="text-xs text-gray-600 mb-4">
+        {/* <div className="text-xs text-gray-600 mb-4">
           Home / Vehicles / Used Cars / <span className="text-gray-900 font-medium">Cars</span>
-        </div>
+        </div> */}
 
         {/* Page Title */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
-            Used Ford Cars for Sale in Kerala • <span className="text-gray-600 font-normal">1,000 Ads</span>
+            {products[0]?.category?.description || "Catalogue"}<span className="text-gray-600 font-normal"></span>
           </h1>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Sort:</span>
@@ -132,11 +148,10 @@ const CataloguePage = () => {
           </div>
         </div>
 
-        <div className="flex gap-5">
-          {/* Left Sidebar - Filters */}
+        {/* 
+          <div className="flex gap-5">
           <div className="w-[270px] flex-shrink-0">
             <div className="bg-white rounded-md">
-              {/* CATEGORIES */}
               <div className="border-b border-gray-200 p-4">
                 <h3 className="text-[11px] font-bold text-gray-900 mb-3 tracking-wide">CATEGORIES</h3>
                 <div className="space-y-2">
@@ -149,7 +164,6 @@ const CataloguePage = () => {
                 </div>
               </div>
 
-              {/* LOCATIONS */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('locations')}
@@ -173,7 +187,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* BRAND AND MODEL */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('brand')}
@@ -218,7 +231,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* BUDGET */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('budget')}
@@ -241,7 +253,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* YEAR */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('year')}
@@ -273,7 +284,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* NO. OF OWNERS */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('owners')}
@@ -297,7 +307,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* KM DRIVEN */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('kmDriven')}
@@ -320,7 +329,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* FUEL */}
               <div className="border-b border-gray-200 p-4">
                 <button 
                   onClick={() => toggleSection('fuel')}
@@ -344,7 +352,6 @@ const CataloguePage = () => {
                 )}
               </div>
 
-              {/* TRANSMISSION */}
               <div className="p-4">
                 <button 
                   onClick={() => toggleSection('transmission')}
@@ -365,71 +372,52 @@ const CataloguePage = () => {
               </div>
             </div>
           </div>
+        */}
 
           {/* Right Content - Car Listings */}
           <div className="flex-1">
             <div className="space-y-4">
-              {cars.map((car) => (
-                <div key={car.id} className="bg-white rounded-md hover:shadow-md transition-shadow overflow-hidden">
+              {products.map((p) => (
+                <div onClick={() => navigate(`/product/${p._id}`)} key={p._id} className="bg-white rounded-md hover:shadow-md transition-shadow overflow-hidden">
                   <div className="flex">
-                    {/* Car Image */}
+
+                    {/* Product Image */}
                     <div className="w-[280px] h-[185px] flex-shrink-0">
                       <img
-                        src={car.image}
-                        alt={car.name}
+                        src={`http://localhost:5000${p.images?.[0]?.url}`}
+                        alt={p.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
-                    {/* Car Details */}
+                    {/* Product Info */}
                     <div className="flex-1 p-4 flex flex-col justify-between">
                       <div>
                         <div className="flex items-start justify-between mb-1.5">
-                          <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900">₹ {car.price}</h3>
-                          </div>
-                          <button className="w-9 h-9 flex items-center text-white justify-center bg-[#8069AE] rounded-lg hover:shadow-2xl transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-forward-icon lucide-forward"><path d="m15 17 5-5-5-5"/><path d="M4 18v-2a4 4 0 0 1 4-4h12"/></svg>
+                          <h3 className="text-xl font-bold text-gray-900">₹ {p.price}</h3>
+
+                          {/* View Button */}
+                          <button
+                            onClick={() => navigate(`/product/${p._id}`)}
+                            className="w-9 h-9 flex items-center justify-center bg-[#8069AE] rounded-lg text-white"
+                          >
+                            ➜
                           </button>
                         </div>
-                        <p className="text-xs text-gray-600 mb-2">
-                          {car.type} • {car.series} • {car.register}
-                        </p>
+
                         <p className="text-sm text-gray-800 mb-2.5 leading-relaxed">
-                          {car.name}
+                          {p.title}
                         </p>
+
                         <div className="flex items-center gap-3 text-xs text-gray-600">
-                          <span className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {car.year}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                            {car.km}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            {car.location}
-                          </span>
+                          <span>{p.location?.place || "Unknown location"}</span>
                         </div>
                       </div>
-                      {car.featured && (
-                        <div className="flex justify-end mt-3">
-                          <span className="inline-block bg-[#FCD34D] text-gray-900 text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wide">
-                            FEATURED
-                          </span>
-                        </div>
-                      )}
                     </div>
+
                   </div>
                 </div>
+
               ))}
             </div>
 
@@ -443,8 +431,6 @@ const CataloguePage = () => {
             </div>
           </div>
         </div>
-      </div>
-
       <Footer />
     </div>
   );

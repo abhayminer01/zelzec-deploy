@@ -2,6 +2,7 @@
 import React from 'react';
 
 const ProductInfoCard = ({ product, onChatClick, isOwner, currentUserId }) => {
+    console.log(product)
     const seller = product.user || {};
     const price = product.price;
 

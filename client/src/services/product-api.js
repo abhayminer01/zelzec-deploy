@@ -53,3 +53,12 @@ export const getProductForProfile = async () => {
     console.log(error);
   }
 }
+
+export const getProductsOfCategory = async (category) => {
+    try {
+        const req = await api.get(`/find-by-category/${category}`);
+        return req.data;
+    } catch (error) {
+        console.log(error);
+    }
+}

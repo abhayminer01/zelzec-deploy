@@ -90,20 +90,30 @@ const getListedProducts = async (req, res) => {
   }
 }
 
-// GET PRODUCTS ACORDING TO CATEGORY
+// GET PRODUCTS ACCORDING TO CATEGORY
 const getProductsForCategory = async (req, res) => {
   try {
-    const { category } = req.body;
-    const products = Product.find({ category : category }).sort({ createdAt : -1 });
+    const categoryId = req.params.id;   // FIX 1: Read from params
 
-    res.status(200).json({ success : true, data : products })
+    const products = await Product
+      .find({ category: categoryId })   // FIX 2: add await & correct filter
+      .populate("category")             // FIX 3: correct populate key
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: products
+    });
+
   } catch (error) {
+    console.log("❌ CATEGORY FILTER ERROR:", error);
     return res.status(500).json({
       success: false,
-      message: error
+      message: error.message
     });
   }
-}
+};
+
 
 module.exports = {
   createProduct,

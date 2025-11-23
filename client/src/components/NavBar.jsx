@@ -70,8 +70,8 @@ export default function NavBar() {
         </div>
       </div>
 
-      <div className="hidden md:flex justify-center bg-[#F6F1FF]">
-        <div className="flex gap-10 p-5">
+      <div className="hidden md:flex h-8 justify-center bg-[#F6F1FF]">
+        <div className="flex gap-10 p-1">
           <a href="">Buy & Sell</a>
           <a href="">Vehicles</a>
           <a href="">Real Estate</a>
