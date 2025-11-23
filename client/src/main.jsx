@@ -11,7 +11,7 @@ import { ChatProvider } from './contexts/ChatContext';
 import ProductPage from './pages/ProductPage';
 import ProfilePage from './pages/ProfilePage';
 import Catalouge from './pages/Catalouge'; // ✅ Import
-import ChatSidebar from './components/chatSidebar';
+import ChatSidebar from './components/ChatSidebar';
 import ChatWidget from './components/ChatWidget';
 import CataloguePage from './pages/CataloguePage';
 import MobileChatListPage from './pages/MobileChatListPage';
